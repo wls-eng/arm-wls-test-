@@ -1,0 +1,38 @@
+{
+	"adminPasswordOrKey": {
+		"value": "Weblogic5678"
+	},
+	"adminUsername": {
+		"value": "weblogic"
+	},
+	"authenticationType": {
+		"value": "password"
+	},
+	"enableAAD": {
+		"value": false
+	},
+	"enableDB": {
+		"value": false
+	},
+	"enableCustomDNS": {
+		"value": false
+	},
+	"enableELK": {
+		"value": false
+	},
+	"hasDNSZones": {
+		"value": false
+	},
+	"vmSizeSelect": {
+		"value": "Standard_B1ms"
+	},
+	"enableCustomSSL": {
+		"value": false
+	},
+	"wlsPassword": {
+		"value": "Weblogic5678"
+	},
+	"wlsUserName": {
+		"value": "weblogic"
+	}
+}
