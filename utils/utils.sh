@@ -181,10 +181,10 @@ function isUtilityInstalled()
 
     if [ "$?" != "0" ];
     then
-       echo "FAILURE - Utility $utilityName not found. "
+       echo "FAILURE: Utility $utilityName not found."
        notifyFail
     else
-       echo "SUCCESS - Utility $utilityName found."
+       echo "SUCCESS: Utility $utilityName found."
        notifyPass
     fi
 
@@ -204,22 +204,22 @@ function testWDTInstallation()
 
     if [ ! -d "$WDT_HOME" ];
     then
-        print "FAILURE - Weblogic Deploy Tool not found"
+        print "FAILURE: Weblogic Deploy Tool not found"
         notifyFail
         endTest
         return
     else
-        print "SUCCESS - Weblogic Deploy Tool found"
+        print "SUCCESS: Weblogic Deploy Tool found"
         notifyPass
 
         $WDT_HOME/bin/createDomain.sh
 
         if [ "$?" != "0" ];
         then
-            print "FAILURE - Failed to verify Deploy Tool"
+            print "FAILURE: Failed to verify Deploy Tool"
             notifyFail
         else
-            print "SUCCESS - Deploy tool verified successfully"
+            print "SUCCESS: Deploy tool verified successfully"
             notifyPass
         fi
     fi

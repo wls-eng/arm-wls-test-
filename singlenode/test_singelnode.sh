@@ -56,10 +56,10 @@ function testAdminConsole()
 
     if [ "$?" != "0" ];
     then
-       echo "FAILURE - testAdminConsole"
+       echo "FAILURE: testAdminConsole"
        notifyFail
     else
-       echo "SUCCESS - testAdminConsole"
+       echo "SUCCESS: testAdminConsole"
        notifyPass
     fi
 
@@ -79,10 +79,10 @@ function testServerRestart()
 
     if [ "$?" != "0" ];
     then
-       echo "FAILURE - testServerRestart"
+       echo "FAILURE: testServerRestart"
        notifyFail
     else
-       echo "SUCCESS - testServerRestart"
+       echo "SUCCESS: testServerRestart"
        notifyPass
     fi
 

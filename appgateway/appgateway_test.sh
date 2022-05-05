@@ -197,10 +197,10 @@ function deployReplicationWebApp()
 
     if [ "${deploymentStatus}" != "SUCCESS" ];
     then
-        echo "FAILURE - Replication WebApp Deployment Failed. Deployment Status: ${deploymentStatus}"
+        echo "FAILURE: Replication WebApp Deployment Failed. Deployment Status: ${deploymentStatus}"
         notifyFail
     else
-        echo "SUCCESS - Replication WebApp Deployed Successfully. Deployment Status: ${deploymentStatus}"
+        echo "SUCCESS: Replication WebApp Deployed Successfully. Deployment Status: ${deploymentStatus}"
         notifyPass
         print "Wait for 15 seconds for the deployed Apps to become available..."
         sleep 15s

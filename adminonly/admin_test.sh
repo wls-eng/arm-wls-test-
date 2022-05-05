@@ -14,16 +14,16 @@ function isServerRunning()
 
     if [ -z "$serverStatus" ];
     then
-        echo "FAILURE - Invalid Server Status for Server $serverName"
+        echo "FAILURE: Invalid Server Status for Server $serverName"
         notifyFail
     fi
 
     if [ "$serverStatus" != "RUNNING" ];
     then
-        echo "FAILURE - Server $serverName not running as expected."
+        echo "FAILURE: Server $serverName not running as expected."
         notifyFail
     else
-        echo "SUCCESS - Server $serverName running as expected."
+        echo "SUCCESS: Server $serverName running as expected."
         notifyPass
     fi
 }
@@ -35,10 +35,10 @@ function testWLSDomainPath()
     print "DOMAIN_DIR: ${ADMIN_DOMAIN_DIR}"
 
     if [ ! -d "${ADMIN_DOMAIN_DIR}" ]; then
-      echo "FAILURE - Weblogic Server Domain directory not setup as per the expected directory structure: ${ADMIN_DOMAIN_DIR} "
+      echo "FAILURE: Weblogic Server Domain directory not setup as per the expected directory structure: ${ADMIN_DOMAIN_DIR} "
       notifyFail
     else
-      echo "SUCCESS - Weblogic Server Domain path verified successfully"
+      echo "SUCCESS: Weblogic Server Domain path verified successfully"
       notifyPass
     fi
 
@@ -54,10 +54,10 @@ function testAdminConsoleHTTP()
 
     if [ "${retcode}" != "200" ];
     then
-        echo "FAILURE - Admin Console is not accessible. Curl returned code ${retcode}"
+        echo "FAILURE: Admin Console is not accessible. Curl returned code ${retcode}"
         notifyFail
     else
-        echo "SUCCESS - Admin Console is accessible. Curl returned code ${retcode}"
+        echo "SUCCESS: Admin Console is accessible. Curl returned code ${retcode}"
         notifyPass
     fi
 
@@ -72,10 +72,10 @@ function testAdminConsoleHTTPS()
 
     if [ "${retcode}" != "200" ];
     then
-        echo "FAILURE - Admin Console is not accessible. Curl returned code ${retcode}"
+        echo "FAILURE: Admin Console is not accessible. Curl returned code ${retcode}"
         notifyFail
     else
-        echo "SUCCESS - Admin Console is accessible. Curl returned code ${retcode}"
+        echo "SUCCESS: Admin Console is accessible. Curl returned code ${retcode}"
         notifyPass
     fi
 
@@ -137,10 +137,10 @@ function testAppDeployment()
 
     if [ "${deploymentStatus}" != "SUCCESS" ];
     then
-        echo "FAILURE - App Deployment Failed. Deployment Status: ${deploymentStatus}"
+        echo "FAILURE: App Deployment Failed. Deployment Status: ${deploymentStatus}"
         notifyFail
     else
-        echo "SUCCESS - App Deployed Successfully. Deployment Status: ${deploymentStatus}"
+        echo "SUCCESS: App Deployed Successfully. Deployment Status: ${deploymentStatus}"
         notifyPass
     fi
     rm -rf /tmp/deploy
@@ -159,10 +159,10 @@ function testDeployedAppHTTP()
 
     if [ "${retcode}" != "200" ];
     then
-        echo "FAILURE - Deployed App is not accessible. Curl returned code ${retcode}"
+        echo "FAILURE: Deployed App is not accessible. Curl returned code ${retcode}"
         notifyFail
     else
-        echo "SUCCESS - Deployed App is accessible. Curl returned code ${retcode}"
+        echo "SUCCESS: Deployed App is accessible. Curl returned code ${retcode}"
         notifyPass
     fi
 
@@ -178,10 +178,10 @@ function testDeployedAppHTTPS()
 
     if [ "${retcode}" != "200" ];
     then
-        echo "FAILURE - Deployed App is not accessible. Curl returned code ${retcode}"
+        echo "FAILURE: Deployed App is not accessible. Curl returned code ${retcode}"
         notifyFail
     else
-        echo "SUCCESS - Deployed App is accessible. Curl returned code ${retcode}"
+        echo "SUCCESS: Deployed App is accessible. Curl returned code ${retcode}"
         notifyPass
     fi
 
@@ -197,10 +197,10 @@ function verifyAdminSystemService()
 
     if [ $? == 1 ];
     then
-        echo "FAILURE - Service $WLS_ADMIN_SERVICE not found"
+        echo "FAILURE: Service $WLS_ADMIN_SERVICE not found"
         notifyFail
     else
-        echo "SUCCESS - Service $WLS_ADMIN_SERVICE found"
+        echo "SUCCESS: Service $WLS_ADMIN_SERVICE found"
         notifyPass
     fi
 

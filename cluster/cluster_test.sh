@@ -15,16 +15,16 @@ function isServerRunning()
 
     if [ -z "$serverStatus" ];
     then
-        echo "FAILURE - Invalid Server Status for Server $serverName"
+        echo "FAILURE: Invalid Server Status for Server $serverName"
         notifyFail
     fi
 
     if [ "$serverStatus" != "RUNNING" ];
     then
-        echo "FAILURE - Server $serverName not running as expected."
+        echo "FAILURE: Server $serverName not running as expected."
         notifyFail
     else
-        echo "SUCCESS - Server $serverName running as expected."
+        echo "SUCCESS: Server $serverName running as expected."
         notifyPass
     fi
 }
@@ -39,16 +39,16 @@ function isServerShutdown()
 
     if [ -z "$serverStatus" ];
     then
-        echo "FAILURE - Invalid Server Status for Server $serverName"
+        echo "FAILURE: Invalid Server Status for Server $serverName"
         notifyFail
     fi
 
     if [ "$serverStatus" != "SHUTDOWN" ];
     then
-        echo "FAILURE - Server $serverName not shutdown as expected."
+        echo "FAILURE: Server $serverName not shutdown as expected."
         notifyFail
     else
-        echo "SUCCESS - Server $serverName shutdown as expected."
+        echo "SUCCESS: Server $serverName shutdown as expected."
         notifyPass
     fi
 }
@@ -74,10 +74,10 @@ function shutdownServer()
 
     if [ "$shutdownStatus" != "success" ];
     then
-        echo "FAILURE - Server $serverName not shutdown as expected."
+        echo "FAILURE: Server $serverName not shutdown as expected."
         notifyFail
     else
-        echo "SUCCESS - Server $serverName shutdown as expected."
+        echo "SUCCESS: Server $serverName shutdown as expected."
         notifyPass
     fi
 }
@@ -102,10 +102,10 @@ function startServer()
 
     if [ "$serverStartStatus" != "success" ];
     then
-        echo "FAILURE - Server $serverName not started as expected."
+        echo "FAILURE: Server $serverName not started as expected."
         notifyFail
     else
-        echo "SUCCESS - Server $serverName started as expected."
+        echo "SUCCESS: Server $serverName started as expected."
         notifyPass
     fi
 
@@ -291,10 +291,10 @@ function testAppDeployment()
 
     if [ "${deploymentStatus}" != "SUCCESS" ];
     then
-        echo "FAILURE - App Deployment Failed. Deployment Status: ${deploymentStatus}"
+        echo "FAILURE: App Deployment Failed. Deployment Status: ${deploymentStatus}"
         notifyFail
     else
-        echo "SUCCESS - App Deployed Successfully. Deployment Status: ${deploymentStatus}"
+        echo "SUCCESS: App Deployed Successfully. Deployment Status: ${deploymentStatus}"
         notifyPass
     fi
     rm -rf /tmp/deploy
@@ -371,10 +371,10 @@ function testDeployedAppHTTP()
 
         if [ "${retcode}" != "200" ];
         then
-            echo "FAILURE - Deployed App is not accessible on ${serverName}. Curl returned code ${retcode}"
+            echo "FAILURE: Deployed App is not accessible on ${serverName}. Curl returned code ${retcode}"
             notifyFail
         else
-            echo "SUCCESS - Deployed App is accessible on ${serverName}. Curl returned code ${retcode}"
+            echo "SUCCESS: Deployed App is accessible on ${serverName}. Curl returned code ${retcode}"
             notifyPass
         fi
 

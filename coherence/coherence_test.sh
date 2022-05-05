@@ -24,10 +24,10 @@ function verifyCoherenceCluster()
 
     if [ "$coherenceClusterName" != "${COHERENCE_CLUSTER_NAME}" ];
     then
-        echo "FAILURE - Coherence Cluster name verification failed"
+        echo "FAILURE: Coherence Cluster name verification failed"
         notifyFail
     else
-        echo "SUCCESS - Coherence Cluster name verification is successful."
+        echo "SUCCESS: Coherence Cluster name verification is successful."
         notifyPass
     fi
 
@@ -35,10 +35,10 @@ function verifyCoherenceCluster()
 
     if [ "$coherenceClusterStatus" != "true" ];
     then
-        echo "FAILURE - Coherence Cluster status verification failed"
+        echo "FAILURE: Coherence Cluster status verification failed"
         notifyFail
     else
-        echo "SUCCESS - Coherence Cluster status verification is successful."
+        echo "SUCCESS: Coherence Cluster status verification is successful."
         notifyPass
     fi
 
@@ -50,10 +50,10 @@ function verifyCoherenceCluster()
 
     if [ "${EXPECTED_COHERENCE_CLUSTER_SIZE}" != "${ACTUAL_COHERENCE_CLUSTER_SIZE}" ];
     then
-        echo "FAILURE - Coherence Cluster size verification failed"
+        echo "FAILURE: Coherence Cluster size verification failed"
         notifyFail
     else
-        echo "SUCCESS - Coherence Cluster size verification is successful."
+        echo "SUCCESS: Coherence Cluster size verification is successful."
         notifyPass
     fi
 
@@ -78,7 +78,7 @@ function verifyCoherenceCluster()
        if printf '%s\n' ${clusterMembers[@]} | grep -q -P "^${expectedMemberId}$"; then
             print "Member ${expectedMemberId} part of Coherence cluster"
        else
-            echo "FAILURE - Coherence Cluster Member verification failed. ${expectedMemberId} not part of Coherence Cluster"
+            echo "FAILURE: Coherence Cluster Member verification failed. ${expectedMemberId} not part of Coherence Cluster"
             failed=true
             break
        fi
@@ -91,7 +91,7 @@ function verifyCoherenceCluster()
        if printf '%s\n' ${clusterMembers[@]} | grep -q -P "^${expectedMemberId}$"; then
             print "Member ${expectedMemberId} part of Coherence cluster"
        else
-            echo "FAILURE - Coherence Cluster Member verification failed. ${expectedMemberId} not part of Coherence Cluster"            
+            echo "FAILURE: Coherence Cluster Member verification failed. ${expectedMemberId} not part of Coherence Cluster"
             failed=true
             break
        fi
@@ -100,7 +100,7 @@ function verifyCoherenceCluster()
 
     if [ "$failed" != "true" ];
     then
-         echo "SUCCESS - Coherence Cluster Member verification successful."
+         echo "SUCCESS: Coherence Cluster Member verification successful."
          notifyPass
     else
          notifyFail
