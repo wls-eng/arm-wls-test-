@@ -98,7 +98,7 @@ then
   echo "SUCCESS: Remote Anonymous RMIT3 Enabled MBean is set to false as required"
   notifyPass
 else
-  echo "FAIURE: Remote Anonymous RMIT3 Enabled MBean is not set to false as required"
+  echo "FAILURE: Remote Anonymous RMIT3 Enabled MBean is not set to false as required"
   notifyFail
 fi
 
