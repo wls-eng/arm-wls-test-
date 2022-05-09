@@ -151,6 +151,49 @@ function testAppDeployment()
     endTest
 }
 
+function testAppUnDeployment()
+{
+
+    startTest
+
+    output=$(curl -s \
+    --user ${WLS_USERNAME}:${WLS_PASSWORD} \
+    -H X-Requested-By:MyClient \
+    -H Accept:application/json \
+    -X GET ${HTTP_ADMIN_URL}/management/weblogic/latest/domainRuntime/serverLifeCycleRuntimes?links=none&fields=name,state)
+
+    adminServerName=$(echo $output | jq -r --arg ADMIN_NAME "$ADMIN_SERVER_NAME" '.items[]|select(.name | test($ADMIN_NAME;"i")) | .name ')
+
+    print "adminServerName $adminServerName"
+
+    retcode=$(curl -s \
+            --user ${WLS_USERNAME}:${WLS_PASSWORD} \
+            -H X-Requested-By:MyClient \
+            -H Accept:application/json \
+            -H Content-Type:application/json \
+            -d "{
+                targets:    [ '${adminServerName}' ],
+                deploymentOptions: {}
+            }" \
+            -X POST ${HTTP_ADMIN_URL}/management/weblogic/latest/domainRuntime/deploymentManager/appDeploymentRuntimes/${SHOPPING_CART_APP_NAME}/undeploy)
+
+    print "$retcode"
+
+    undeploymentStatus="$(echo $retcode | jq -r '.completed')"
+
+    if [ "$undeploymentStatus" == "true" ];
+    then
+       echo "SUCCESS: Shopping cart Application undeployed successfully"
+       notifyPass
+    else
+       echo "FAILURE: Shopping cart Application undeployment failed"
+       notifyFail
+    fi
+
+endTest
+}
+
+
 function testDeployedAppHTTP()
 {
     startTest
@@ -228,6 +271,8 @@ testAppDeployment
 testDeployedAppHTTP
 
 testDeployedAppHTTPS
+
+testAppUnDeployment
 
 verifyAdminSystemService
 
