@@ -14,11 +14,11 @@ function verifyCoherenceCluster()
     -H X-Requested-By:MyClient \
     -H Accept:application/json \
     -H Content-Type:application/json \
-    -X GET ${HTTP_ADMIN_URL}/management/coherence/latest/clusters)
+    -X GET ${HTTP_ADMIN_URL}/management/coherence/latest/clusters/${COHERENCE_CLUSTER_NAME})
 
     print "$output"
 
-    coherenceClusterName=$(echo $output | jq -r '.items[].clusterName')
+    coherenceClusterName=$(echo $output | jq -r '.clusterName')
 
     print "coherence Cluster Name: $coherenceClusterName"
 
@@ -31,7 +31,7 @@ function verifyCoherenceCluster()
         notifyPass
     fi
 
-    coherenceClusterStatus=$(echo $output | jq -r '.items[].running')
+    coherenceClusterStatus=$(echo $output | jq -r '.running')
 
     if [ "$coherenceClusterStatus" != "true" ];
     then
@@ -45,7 +45,7 @@ function verifyCoherenceCluster()
     EXPECTED_COHERENCE_CLUSTER_SIZE=$((${DEFAULT_CLUSTER_SIZE}+${DEFAULT_NUM_OF_COHERENCE_SERVERS}))
     print "Expected Coherence Cluster size: $EXPECTED_COHERENCE_CLUSTER_SIZE"
 
-    ACTUAL_COHERENCE_CLUSTER_SIZE=$(echo $output | jq -r '.items[].clusterSize')
+    ACTUAL_COHERENCE_CLUSTER_SIZE=$(echo $output | jq -r '.clusterSize')
     print "Actual Coherence Cluster size: $ACTUAL_COHERENCE_CLUSTER_SIZE"
 
     if [ "${EXPECTED_COHERENCE_CLUSTER_SIZE}" != "${ACTUAL_COHERENCE_CLUSTER_SIZE}" ];
@@ -59,7 +59,7 @@ function verifyCoherenceCluster()
 
 
     clusterMembers=()
-    output="$(echo $output | jq -r '.items[].members[]')"
+    output="$(echo $output | jq -r '.members[]')"
     IFS=
     while read -r member;
     do
