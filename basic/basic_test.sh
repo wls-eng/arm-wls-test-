@@ -8,16 +8,14 @@ function testHostInfo()
 {
     startTest
 
-    hostnamectl
-
-    hostnamectl | grep "$OS_VERSION"
+    hostnamectl | grep "$OS_VERSION" > /dev/null 2>&1
 
     if [ "$?" != "0" ];
     then
-       echo "FAILURE - VM: OS Version verification failed. Expected $OS_VERSION"
+       echo "FAILURE: VM: OS Version verification failed. Expected $OS_VERSION"
        notifyFail
     else
-       echo "SUCCESS - VM: OS version verified successfully"
+       echo "SUCCESS: VM: OS version verified successfully"
        notifyPass
     fi
 
@@ -28,13 +26,13 @@ function testWLSInstallPath()
 {
     startTest
 
-    echo "WLS_HOME: ${WLS_HOME}"
+    print "WLS_HOME: ${WLS_HOME}"
 
     if [ ! -d "${WLS_HOME}" ]; then
-      echo "Weblogic Server not installed as per the expected directory structure: ${WLS_HOME} "
+      echo "FAILURE: Weblogic Server not installed as per the expected directory structure: ${WLS_HOME} "
       notifyFail
     else
-      echo "Weblogic Server install path verified successfully"
+      echo "SUCCESS: Weblogic Server install path verified successfully"
       notifyPass
     fi
 
@@ -49,22 +47,22 @@ function testWLSVersion()
       echo "Weblogic Server not installed as per the expected directory structure"
       notifyFail
     else
-        
+
         cd ${WLS_HOME}/server/bin
 
-        . ./setWLSEnv.sh
+        . ./setWLSEnv.sh > /dev/null 2>&1
 
         OUTPUT="$(java weblogic.version)"
-        echo "${OUTPUT}"
+        print "${OUTPUT}"
 
-        echo "${OUTPUT}"|grep ${WLS_VERSION}
+        echo "${OUTPUT}"|grep ${WLS_VERSION} > /dev/null 2>&1
 
         if [ "$?" != "0" ];
         then
-           echo "FAILURE - Weblogic Server Version could not be verified "
+           echo "FAILURE: Weblogic Server Version could not be verified "
            notifyFail
         else
-           echo "SUCCESS - Weblogic Server Version verified successfully"
+           echo "SUCCESS: Weblogic Server Version verified successfully"
            notifyPass
         fi
     fi
@@ -79,15 +77,15 @@ function testJavaInstallPath()
 
     cd ${WLS_HOME}/server/bin
 
-    . ./setWLSEnv.sh
+    . ./setWLSEnv.sh > /dev/null 2>&1
 
     if [ ! -d "${JAVA_HOME}" ]; then
-      echo "JAVA/JDK is not installed as per the expected directory structure: ${WLS_HOME} "
+      echo "FAILURE: JAVA/JDK is not installed as per the expected directory structure: ${WLS_HOME} "
       notifyFail
     else
-      echo "JAVA/JDK installation path verified successfully"
+      echo "SUCCESS: JAVA/JDK installation path verified successfully"
       notifyPass
-    fi     
+    fi
 
     endTest
 }
@@ -98,20 +96,18 @@ function testJavaVersion()
 
     cd ${WLS_HOME}/server/bin
 
-    . ./setWLSEnv.sh
+    . ./setWLSEnv.sh > /dev/null 2>&1
 
     java -version 2> /tmp/java_version.txt
 
-    cat /tmp/java_version.txt 
-    
-    cat /tmp/java_version.txt |grep "${JDK_VERSION}"
-    
+    cat /tmp/java_version.txt |grep "${JDK_VERSION}" > /dev/null 2>&1
+
     if [ "$?" != "0" ];
     then
-       echo "FAILURE - Java Version could not be verified "
+       echo "FAILURE: Java Version could not be verified "
        notifyFail
     else
-       echo "SUCCESS - Java Server Version verified successfully"
+       echo "SUCCESS: Java Server Version verified successfully"
        notifyPass
     fi
 
@@ -150,12 +146,12 @@ function testJDBCDrivers()
     endTest
 
     startTest
-  
+
     cd ${WLS_HOME}/server/bin
 
-    . ./setWLSEnv.sh >/dev/null
-  
-    echo ${WEBLOGIC_CLASSPATH} | grep "${POSTGRESQL_JAR}"
+    . ./setWLSEnv.sh > /dev/null 2>&1
+
+    echo ${WEBLOGIC_CLASSPATH} | grep "${POSTGRESQL_JAR}" > /dev/null 2>&1
 
     if [ $? == 1 ];
     then
@@ -166,9 +162,9 @@ function testJDBCDrivers()
         notifyPass
     fi
 
-    echo "==========================================================================="
+    print "==========================================================================="
 
-    echo ${WEBLOGIC_CLASSPATH} | grep "${MSSQL_JAR}"
+    echo ${WEBLOGIC_CLASSPATH} | grep "${MSSQL_JAR}" > /dev/null 2>&1
 
     if [ $? == 1 ];
     then
@@ -187,7 +183,7 @@ function testRNGDService()
 
     startTest
 
-    systemctl status rngd | grep "active (running)"
+    systemctl status rngd | grep "active (running)" > /dev/null 2>&1
 
     if [ "$?" != "0" ];
     then
@@ -222,7 +218,7 @@ function testUtilities()
 
 get_param "$@"
 
-validate_input 
+validate_input
 
 testHostInfo
 
@@ -241,3 +237,4 @@ testRNGDService
 testUtilities
 
 printTestSummary
+

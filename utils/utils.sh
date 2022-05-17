@@ -10,7 +10,12 @@ usage()
 cat << USAGE >&2
 Usage:
     -i            INPUT_FILE        Path to Command input File
+    -r            RG_NAME           Resource Group Name (Optional)
+    -o            OTHER_ARGS        Comma separated list of arguments in keyvalue pair (Optional)
     -h|?|--help   HELP              Help/Usage info
+
+ex: $0 -i /test_input/OL7.6_14.1.1.0.0_JDK8.props -r MyResourceGrp
+
 USAGE
 
 exit 1
@@ -31,19 +36,34 @@ function print()
   fi
 }
 
-
 get_param()
 {
     while [ "$1" ]
     do
         case $1 in
          -i         )  INPUT_FILE=$2 ;;
+         -r         )  RG_NAME=$2;;
+         -o         )  OTHER_ARGS=$2;;
                    *)  echo 'invalid arguments specified'
                        usage;;
         esac
         shift 2
     done
 }
+
+read_other_args()
+{
+  if [ ! -z "$OTHER_ARGS" ];
+  then
+    IFS=','
+    read -ra ARGS <<< "$OTHER_ARGS"
+    for i in "${ARGS[@]}";
+    do
+        eval "export $i"
+    done
+  fi
+}
+
 
 validate_input()
 {
@@ -59,8 +79,20 @@ validate_input()
         exit 1
     fi
 
+    if [[ -z "$RG_NAME" ]];
+    then
+        echo "command input RG_NAME not provided"
+    fi
+
+    if [[ -z "$OTHER_ARGS" ]];
+    then
+       echo "command input OTHER_ARGS not provided"
+    fi
+
     echo "Using input file $INPUT_FILE"
     source $INPUT_FILE
+
+    read_other_args
 }
 
 function notifyPass()
@@ -149,10 +181,10 @@ function isUtilityInstalled()
 
     if [ "$?" != "0" ];
     then
-       echo "FAILURE - Utility $utilityName not found. "
+       echo "FAILURE: Utility $utilityName not found."
        notifyFail
     else
-       echo "SUCCESS - Utility $utilityName found."
+       echo "SUCCESS: Utility $utilityName found."
        notifyPass
     fi
 
@@ -172,22 +204,22 @@ function testWDTInstallation()
 
     if [ ! -d "$WDT_HOME" ];
     then
-        print "FAILURE - Weblogic Deploy Tool not found"
+        print "FAILURE: Weblogic Deploy Tool not found"
         notifyFail
         endTest
         return
     else
-        print "SUCCESS - Weblogic Deploy Tool found"
+        print "SUCCESS: Weblogic Deploy Tool found"
         notifyPass
 
         $WDT_HOME/bin/createDomain.sh
 
         if [ "$?" != "0" ];
         then
-            print "FAILURE - Failed to verify Deploy Tool"
+            print "FAILURE: Failed to verify Deploy Tool"
             notifyFail
         else
-            print "SUCCESS - Deploy tool verified successfully"
+            print "SUCCESS: Deploy tool verified successfully"
             notifyPass
         fi
     fi
@@ -199,4 +231,5 @@ source ${UTILS_DIR}/test_config.properties
 
 export passcount=0
 export failcount=0
+
 
