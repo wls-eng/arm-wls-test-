@@ -1,4 +1,4 @@
-# arm-wls-test-
+# arm-wls-test
 Repository with WebLogic test artifacts and scripts.
 
 ## Introduction
