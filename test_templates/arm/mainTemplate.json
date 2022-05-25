@@ -91,7 +91,7 @@
 		{
 			"type": "Microsoft.Compute/virtualMachines/extensions",
 			"apiVersion": "2021-07-01",
-			"name": "[concat(parameters('adminVMName'),'/newuserscript')]",
+			"name": "[concat(parameters('adminVMName'),'/','newuserscript')]",
 			"location": "[parameters('location')]",
 			"properties": {
 				"autoUpgradeMinorVersion": true,

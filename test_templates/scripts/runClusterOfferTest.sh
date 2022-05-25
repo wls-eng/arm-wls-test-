@@ -7,8 +7,11 @@ sudo yum install -y git jq
 sudo mkdir -p /u01/wlstest
 sudo chown -R oracle:oracle /u01/wlstest
 cd /u01/wlstest
+
+rm -rf /u01/wlstest/*
+echo runuser -l oracle -c "cd /u01/wlstest ; git clone $testArtifactRepo"
 runuser -l oracle -c "cd /u01/wlstest ; git clone $testArtifactRepo"
-testWorkDir=/u01/wlstest/arm-wls-patch-test
+testWorkDir=/u01/wlstest/arm-wls-test
 
 cd $testWorkDir
  
@@ -27,15 +30,16 @@ do
 			echo "Executing basic tests"
 			echo "sh $testWorkDir/basic/basic_test.sh -i $testInputFileName"
 			sudo sh $testWorkDir/basic/basic_test.sh -i $testInputFileName > ${test}.log 2>&1
-			echo "error code"
-			echo $?
+			;;
+	"adminonly")
+			echo "Executing adminonly tests"
+			echo "sh $testWorkDir/adminonly/admin_test.sh -i $testInputFileName"
+			sudo sh $testWorkDir/adminonly/admin_test.sh -i $testInputFileName > ${test}.log 2>&1
 			;;
 	"cluster")
 			echo "Executing cluster tests"
 			echo "sh $testWorkDir/cluster/cluster_test.sh -i $testInputFileName"
 			sudo sh $testWorkDir/cluster/cluster_test.sh -i $testInputFileName > ${test}.log 2>&1
-			echo "error code"			
-			echo $?
 			;;
 	"datasource")
 			echo "Executing datasource tests"

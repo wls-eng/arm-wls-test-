@@ -8,7 +8,7 @@ sudo mkdir -p /u01/wlstest
 sudo chown -R oracle:oracle /u01/wlstest
 cd /u01/wlstest
 runuser -l oracle -c "cd /u01/wlstest ; git clone $testArtifactRepo"
-testWorkDir=/u01/wlstest/arm-wls-patch-test
+testWorkDir=/u01/wlstest/arm-wls-test
 
 cd $testWorkDir
  
