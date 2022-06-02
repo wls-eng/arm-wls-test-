@@ -2,8 +2,7 @@
 
 APPGW_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-source ${APPGW_DIR}/../utils/utils.sh
-source ${APPGW_DIR}/../utils/test_config.properties
+BASE_DIR="$(readlink -f ${APPGW_DIR}/..)"
 
 function getAppGWPublicIP()
 {
@@ -74,10 +73,10 @@ function verifyAppGatewayHTTPS()
 
     if [[ "${#array[@]}" == 3 ]];
     then
-       echo "SUCCESS: AppGateway verification is successful."
+       echo "SUCCESS: AppGateway verification is successful. - $2"
        notifyPass
     else
-       echo "FAIL: AppGateway verification failed."
+       echo "FAIL: AppGateway verification failed. - $2"
        notifyFail
     fi
 }
@@ -116,10 +115,10 @@ function verifyAppGatewayHTTP()
 
     if [[ "${#array[@]}" == 3 ]];
     then
-       echo "SUCCESS: AppGateway verification is successful."
+       echo "SUCCESS: AppGateway verification is successful. - $2"
        notifyPass
     else
-       echo "FAIL: AppGateway verification failed."
+       echo "FAIL: AppGateway verification failed. - $2"
        notifyFail
     fi
 }
@@ -213,7 +212,11 @@ function deployReplicationWebApp()
 
 #main
 
+source ${APPGW_DIR}/../utils/utils.sh
+source ${APPGW_DIR}/../utils/test_config.properties
+
 get_param "$@"
+validate_input "$@"
 
 getAppGWPublicIP
 
@@ -223,15 +226,15 @@ getClusterName
 
 deployReplicationWebApp
 
-verifyAppGatewayHTTPS "$APPGW_IP_ADDR"
+verifyAppGatewayHTTPS "$APPGW_IP_ADDR" "HTTPS using IPAddress"
 
-verifyAppGatewayHTTP "$APPGW_IP_ADDR"
+verifyAppGatewayHTTP "$APPGW_IP_ADDR" "HTTP using IPAddress"
 
 getAppGWPublicFQDN
 
-verifyAppGatewayHTTPS "$APPGW_FQDN"
+verifyAppGatewayHTTPS "$APPGW_FQDN" "HTTPS using FQDN"
 
-verifyAppGatewayHTTP "$APPGW_FQDN"
+verifyAppGatewayHTTP "$APPGW_FQDN" "HTTP using FQDN"
 
 printTestSummary
 
