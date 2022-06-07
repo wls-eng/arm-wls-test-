@@ -46,6 +46,21 @@ do
 			echo "sh $testWorkDir/datasource/datasource_test.sh -i $testInputFileName"
 			sudo sh $testWorkDir/datasource/datasource_test.sh -i $testInputFileName > ${test}.log 2>&1
 			;;
+	"ssl-customcert")
+			echo "Executing ssl with custom certificates"
+			echo "sh $testWorkDir/ssl/ssl_test.sh -i $testInputFileName -o CERT_TYPE=CUSTOMCERT"
+			sudo sh $testWorkDir/ssl/ssl_test.sh -i $testInputFileName -o CERT_TYPE=CUSTOMCERT > ${test}.log 2>&1
+			;;
+	"ssl-democert")
+			echo "Executing ssl with demo certificates"
+			echo "sh $testWorkDir/ssl/ssl_test.sh -i $testInputFileName -o CERT_TYPE=DEMOCERT"
+			sudo sh $testWorkDir/ssl/ssl_test.sh -i $testInputFileName -o CERT_TYPE=DEMOCERT > ${test}.log 2>&1
+			;;
+	"security")
+			echo "Executing security tests"
+			echo "sh $testWorkDir/security/security_test.sh  -i $testInputFileName"
+			sudo sh $testWorkDir/security/security_test.sh  -i $testInputFileName > ${test}.log 2>&1
+			;;
 	*)
 			usage
 			;;
