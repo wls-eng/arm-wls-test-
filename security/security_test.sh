@@ -79,7 +79,11 @@ else
   notifyFail
 fi
 
-output=$(curl -s \
+if [ "${SKIP_REMOTE_ANONYMOUS_TESTS}" == "true" ];
+then
+  echo "Skipping Remote Anonymous tests"
+else
+  output=$(curl -s \
     --user ${WLS_USERNAME}:${WLS_PASSWORD} \
     -H X-Requested-By:MyClient \
     -H Accept:application/json \
@@ -87,19 +91,20 @@ output=$(curl -s \
     -d "{}" \
     -X GET ${HTTP_ADMIN_URL}/management/weblogic/latest/domainConfig/securityConfiguration)
 
-print "$output"
+  print "$output"
 
-REMOTE_ANONYMOUS_RMIT3_ENABLED=$(echo "$output" | jq -r '.remoteAnonymousRMIT3Enabled')
+  REMOTE_ANONYMOUS_RMIT3_ENABLED=$(echo "$output" | jq -r '.remoteAnonymousRMIT3Enabled')
 
-print "REMOTE_ANONYMOUS_RMIT3_ENABLED: ${REMOTE_ANONYMOUS_RMIT3_ENABLED}"
+  print "REMOTE_ANONYMOUS_RMIT3_ENABLED: ${REMOTE_ANONYMOUS_RMIT3_ENABLED}"
 
-if [ "${REMOTE_ANONYMOUS_RMIT3_ENABLED}" == "false" ];
-then
-  echo "SUCCESS: Remote Anonymous RMIT3 Enabled MBean is set to false as required"
-  notifyPass
-else
-  echo "FAILURE: Remote Anonymous RMIT3 Enabled MBean is not set to false as required"
-  notifyFail
+  if [ "${REMOTE_ANONYMOUS_RMIT3_ENABLED}" == "false" ];
+  then
+    echo "SUCCESS: Remote Anonymous RMIT3 Enabled MBean is set to false as required"
+    notifyPass
+  else
+    echo "FAILURE: Remote Anonymous RMIT3 Enabled MBean is not set to false as required"
+    notifyFail
+  fi
 fi
 
 
