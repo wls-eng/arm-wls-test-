@@ -35,12 +35,14 @@ function testWLSDomainPath()
     print "DOMAIN_DIR: ${ADMIN_DOMAIN_DIR}"
 
     if [ ! -d "${ADMIN_DOMAIN_DIR}" ]; then
-      echo "FAILURE: Weblogic Server Domain directory not setup as per the expected directory structure: ${ADMIN_DOMAIN_DIR} "
-      notifyFail
-    else
-      echo "SUCCESS: Weblogic Server Domain path verified successfully"
-      notifyPass
+      if [ ! -d "${CLUSTER_DOMAIN_DIR}" ]; then
+        echo "FAILURE: Weblogic Server Domain directory not setup as per the expected directory structure: "
+        notifyFail
+      fi
     fi
+
+    echo "SUCCESS: Weblogic Server Domain path verified successfully"
+    notifyPass
 
     endTest
 }
