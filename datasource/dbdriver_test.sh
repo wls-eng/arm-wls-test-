@@ -7,7 +7,6 @@ source ${DATASOURCE_DIR}/../utils/test_config.properties
 
 function testJDBCDriverInfoAppDeployment()
 {
-
     mkdir -p /tmp/deploy
     cp ${JDBC_DRIVERINFO_APP_PATH} /tmp/deploy/
     chown -R oracle:oracle /tmp/deploy
@@ -19,11 +18,9 @@ function testJDBCDriverInfoAppDeployment()
     -H X-Requested-By:MyClient \
     -H Accept:application/json \
     -X GET ${HTTP_ADMIN_URL}/management/weblogic/latest/domainRuntime/serverLifeCycleRuntimes?links=none&fields=name,state)
-
-    adminServerName=$(echo $output | jq -r --arg ADMIN_NAME "$ADMIN_SERVER_NAME" '.items[]|select(.name | test($ADMIN_NAME;"i")) | .name ')
-
+    adminServerName=$(echo "$output" | jq -r --arg ADMIN_NAME "$ADMIN_SERVER_NAME" '.items[]| select(.name| index("admin"))|.name')
+    
     print "adminServerName $adminServerName"
-
     retcode=$(curl -s \
             --user ${WLS_USERNAME}:${WLS_PASSWORD} \
             -H X-Requested-By:MyClient \
@@ -35,10 +32,10 @@ function testJDBCDriverInfoAppDeployment()
                 targets:    [ '${adminServerName}' ]
             }" \
             -X POST ${HTTP_ADMIN_URL}/management/wls/latest/deployments/application)
-
+ 
     print "$retcode"
 
-    deploymentStatus="$(echo $retcode | jq -r '.messages[]|.severity')"
+    deploymentStatus=$(echo "$retcode" | jq -r '.messages[]|.severity')
 
     if [ "${deploymentStatus}" != "SUCCESS" ];
     then
@@ -58,18 +55,18 @@ function testJDBCDriverInfoAppDeployment()
 
 function verifyJDBCDriver()
 {
-    echo "verifying JDBC Driver..."
+    print "verifying JDBC Driver..."
 
-    output=$(curl -s -v \
+    output=$(curl -s \
     -H Accept:application/json \
     -H Content-Type:application/json \
     -X GET ${HTTP_ADMIN_URL}/jdbcDriverInfo/JDBCDriverInfoServlet?dsname=${DS_JNDI})
 
-    echo $output
+    print "$output"
 
-    echo $output | jq -r '.result'| grep -i SUCCESS
+    result=$(echo "$output" | jq -r '.result'| grep -i SUCCESS)
     
-    if [ "$?" != "0" ];
+    if [ "$result" != "SUCCESS" ];
     then
         echo "FAILURE: JDBC Driver verification is not successful."
         notifyFail
