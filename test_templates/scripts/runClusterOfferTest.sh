@@ -2,7 +2,16 @@ function usage() { echo "Usage: sh runAdminOfferTest.sh <<< 'basic,adminonly,dat
 
 read testScenarios testInputFileName testArtifactRepo
 
-sudo yum install -y git jq
+# Installation of git and jq differs in RHEL and Oracle Linux
+cat /etc/os-release | grep "Red Hat Enterprise Linux"
+if [[ $? == 0 ]];then
+	sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	sudo yum --disablerepo="*" --enablerepo="epel" list available
+	sudo yum install -y epel-release
+	sudo yum install -y git jq
+else	
+	sudo yum install -y git jq
+fi
 
 sudo mkdir -p /u01/wlstest
 sudo chown -R oracle:oracle /u01/wlstest
