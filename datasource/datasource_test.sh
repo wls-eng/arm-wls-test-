@@ -5,6 +5,22 @@ DATASOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd 
 source ${DATASOURCE_DIR}/../utils/utils.sh
 source ${DATASOURCE_DIR}/../utils/test_config.properties
 
+function usage()
+{
+  echo "usage"
+  echo "$0 -i <test-input-file> -o DS_JNDI=<JNDI_NAME>,DB_TYPE=<DB_TYPE>"
+  echo "DB_TYPE --> POSTGRESQL, MSSQL"
+  echo "example: $0 -i test_input/weblogic-141100-jdk8-ol76.props -o DS_JNDI=jndi/postgresql,DB_TYPE=POSTGRESQL"
+  exit 1
+}
+function validate_other_args()
+{
+    if [ -z "${DS_JNDI}" ] || [ -z "${DB_TYPE}" ]
+    then
+      usage;
+    fi
+}
+
 function verifyJDBCDataSource()
 {
     echo "verifying JDBC Datasource..."
@@ -18,13 +34,13 @@ function verifyJDBCDataSource()
 
     result=$(echo "$output" | jq -r '.body.items[].instances[].state'| grep -i Running)
 
-    if [ "$result" != "Running" ]
+    if [[ "$result" == **"Running"** ]];
     then
-        echo "FAILURE: Database connection is not successful. Please check Datasource configuration and try again."
-        notifyFail
-    else
         echo "SUCCESS: JDBC Datasource connection is successful."
         notifyPass
+    else
+        echo "FAILURE: Database connection is not successful. Please check Datasource configuration and try again."
+        notifyFail
     fi
 }
 
@@ -79,25 +95,109 @@ function testJDBCDriverInfoAppDeployment()
     endTest
 }
 
+function verifyJDBCDriverVersion()
+{
+
+    output=$(curl -s \
+    --user ${WLS_USERNAME}:${WLS_PASSWORD} \
+    -H X-Requested-By:MyClient \
+    -H Accept:application/json \
+    -X GET ${HTTP_ADMIN_URL}/management/weblogic/latest/domainRuntime/serverLifeCycleRuntimes?links=none&fields=name)
+
+    print "output: $output"
+
+    managedServers=$(echo "$output" | jq -r --arg ADMIN_NAME "$ADMIN_SERVER_NAME" '.items[]|select(.name| test($ADMIN_NAME;"i") | not ) | .name')
+    managedServers=$(echo "$managedServers"| tr '\n' ' ')
+
+    managedServers="$(echo $managedServers|xargs)"
+    print "managedServers: $managedServers"
+
+    if [ -z "$managedServers" ];
+    then
+        print "verifying jdbc driver using admin server"
+        T3_SERVER_URL="t3://adminVM:7001"
+        verifyJDBCDriver "${T3_SERVER_URL}" "${DS_JNDI}"
+        return
+    fi
+
+    sleep 5s
+
+    IFS=' '
+    read -a managedServerArray <<< "$managedServers"
+
+    for i in "${!managedServerArray[@]}";
+    do
+        serverName="${managedServerArray[$i]}"
+
+        if [[ $serverName == *"Storage"* ]];
+        then
+          continue
+        fi
+
+        output=$(curl -s \
+        --user ${WLS_USERNAME}:${WLS_PASSWORD} \
+        -H X-Requested-By:MyClient \
+        -H Accept:application/json \
+        -H Content-Type:application/json \
+        -X GET ${HTTP_ADMIN_URL}/management/weblogic/latest/serverConfig/servers/${serverName})
+
+        print "$output"
+
+        serverListenPort=$(echo "$output" | jq -r '.listenPort')
+        machineName=$(echo "$output"| jq -r '.machine[1]')
+        print "machine: $machineName"
+
+        output=$(curl -s \
+        --user ${WLS_USERNAME}:${WLS_PASSWORD} \
+        -H X-Requested-By:MyClient \
+        -H Accept:application/json \
+        -H Content-Type:application/json \
+        -X GET ${HTTP_ADMIN_URL}/management/weblogic/latest/serverConfig/machines/${machineName}/nodeManager)
+
+        print "$output"
+
+        print "\n\n\********************************************\n\n"
+
+        serverListenAddress="$(echo $output | jq -r '.listenAddress')"
+        print "ServerListenAddress: $serverListenAddress"
+        print "ServerListenPort: $serverListenPort"
+
+        T3_SERVER_URL="t3://${serverListenAddress}:$serverListenPort"
+
+        print "checking JDBC Driver version using URL: $T3_SERVER_URL $DS_JNDI"
+
+        verifyJDBCDriver "$T3_SERVER_URL" "$DS_JNDI"
+
+        print -e "\n\n********************************************\n\n\n"
+        sleep 2s
+
+    done
+
+}
+
 function verifyJDBCDriver()
 {
-    print "verifying JDBC Driver..."
+    lookupURL="$1"
+    DS_JNDI="$2"
+
+    print "verifying JDBC Driver for T3 URL $lookupURL ..."
 
     output=$(curl -s \
     -H Accept:application/json \
     -H Content-Type:application/json \
-    -X GET ${HTTP_ADMIN_URL}/jdbcDriverInfo/JDBCDriverInfoServlet?dsname=${DS_JNDI})
+    -X GET "${HTTP_ADMIN_URL}/jdbcDriverInfo/JDBCDriverInfoServlet?dsname=${DS_JNDI}&lookupURL=${lookupURL}")
 
+    print "REST Endpoint: ${HTTP_ADMIN_URL}/jdbcDriverInfo/JDBCDriverInfoServlet?dsname=${DS_JNDI}&lookupURL=${lookupURL}"
     print "$output"
 
     result=$(echo "$output" | jq -r '.result'| grep -i SUCCESS)
 
     if [ "$result" != "SUCCESS" ];
     then
-        echo "FAILURE: JDBC Driver Verify Application is not accessible."
+        echo "FAILURE: JDBC Driver Verify Application is not accessible for $lookupURL ."
         notifyFail
     else
-        echo "SUCCESS: JDBC Driver verify Application is accessible."
+        echo "SUCCESS: JDBC Driver verify Application is accessible for $lookupURL ."
         notifyPass
     fi
 
@@ -112,10 +212,10 @@ function verifyJDBCDriver()
         then
           if [ "${DRIVER_VERSION}" == "${POSTGRESQL_DRIVER_VERSION}" ];
           then
-             echo "SUCCESS: Postgresql driver version verification successful"
+             echo "SUCCESS: Postgresql driver version verification successful for $lookupURL"
              notifyPass
           else
-             echo "FAILURE: Postgresql driver version verification failed"
+             echo "FAILURE: Postgresql driver version verification failed for $lookupURL"
              notifyFail
           fi
         fi
@@ -124,10 +224,10 @@ function verifyJDBCDriver()
         then
           if [ "${DRIVER_VERSION}" == "${MSSQL_DRIVER_VERSION}" ];
           then
-             echo "SUCCESS: MSSQL driver version verification successful"
+             echo "SUCCESS: MSSQL driver version verification successful for $lookpURL"
              notifyPass
           else
-             echo "FAILURE: MSSQL driver version verification failed"
+             echo "FAILURE: MSSQL driver version verification failed for $lookupURL"
              notifyFail
           fi
         fi
@@ -141,6 +241,8 @@ get_param "$@"
 
 validate_input
 
+validate_other_args
+
 verifyJDBCDataSource
 
 if [ -z "$DS_JNDI" ];
@@ -149,8 +251,9 @@ then
   notifyFail
 else
   testJDBCDriverInfoAppDeployment
-  verifyJDBCDriver
+  verifyJDBCDriverVersion
 fi
 
 printTestSummary
+
 
