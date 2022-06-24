@@ -208,6 +208,67 @@ function testOffer()
 	
 }	
 
+# Remote testing
+function remoteTests()
+{
+	testScenarios=$1
+	resourceGroupName=$2
+	testInputFileName=$3
+	currentDirectory=`pwd`
+	rm -f summary.log | true
+	echo "Starting Remote test execution"
+	IFS=',' testLists=( $testScenarios )
+	for test in ${testLists[*]}
+    do
+		case "${test}" in
+		"appgateway")
+			echo "Executing appgateway tests"
+			echo "sh $currentDirectory/../appgateway/appgateway_test.sh -i $testInputFileName"
+			sh $currentDirectory/../appgateway/appgateway_test.sh -i $currentDirectory/../test_input/$testInputFileName -r $resourceGroupName > ${currentDirectory}/${test}.log 2>&1
+			;;
+		"ohs")
+			echo "Executing OHS tests"
+			echo "sh $currentDirectory/../ohs/ohs_test.sh -i $testInputFileName"
+			sh $currentDirectory/../ohs/ohs_test.sh -i $currentDirectory/../test_input/$testInputFileName -r $resourceGroupName > ${currentDirectory}/${test}.log 2>&1
+			;;
+		esac
+		
+		if [ -f ${currentDirectory}/${test}.log ];
+		then
+			echo "================ ${test} Execution Details ================ " >> ${currentDirectory}/summary.log
+        	cat ${test}.log | grep "FAILURE" >> ${currentDirectory}/summary.log
+        	cat ${test}.log | grep "TEST EXECUTION SUMMARY" >> ${currentDirectory}/summary.log
+        	cat ${test}.log | grep "++" >> ${currentDirectory}/summary.log
+        	cat ${test}.log | grep "NO OF TEST PASSED:" >> ${currentDirectory}/summary.log
+        	cat ${test}.log | grep "NO OF TEST FAILED:" >> ${currentDirectory}/summary.log
+        fi
+	done
+	
+	if [ -f ${currentDirectory}/summary.log ];
+	then
+		echo "============================"
+		cat ${currentDirectory}/summary.log
+		echo "============================"
+		cat ${currentDirectory}/summary.log | grep "FAILURE"
+		if [ $? == 0 ]; then
+			echo "----------------------------"
+			echo "| SOME REMOTE TESTS FAILED |"
+			echo "----------------------------" 
+			exit 1
+		else
+			echo "----------------------------"
+			echo "| ALL REMOTE TESTS PASSED  |"
+			echo "----------------------------"
+			exit 0
+		fi	
+	else
+		echo "============================"
+		echo "| REMOTE TESTS NOT EXECUTED|"
+		echo "============================"
+		exit 1 
+	fi
+}
+
 # This function updates offer images to sku to offer template files
 function updateSKU()
 {
