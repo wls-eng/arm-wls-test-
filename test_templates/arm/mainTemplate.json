@@ -82,6 +82,20 @@
 			"metadata": {
 				"description": "Test scripts github repository URL."
 			}
+		},
+		"dsJNDI":{
+			"type": "string",
+			"defaultValue": "jndi/test",
+			"metadata": {
+				"description": "Datasource JNDI name"
+			}
+		},
+		"dbType":{
+			"type": "string",
+			"defaultValue": "POSTGRESQL",
+			"metadata": {
+				"description": "Database type"
+			}
 		}
 	},
 	"variables": {
@@ -104,7 +118,7 @@
 					]
 				},
 				"protectedSettings": {
-					"commandToExecute": "[concat('sh',' ',parameters('testScriptFileName'),' <<< \"',parameters('testScenarios'),' ',parameters('testInputPropertyFile'),' ',parameters('testArtifactRepo'),'\"')]"
+					"commandToExecute": "[concat('sh',' ',parameters('testScriptFileName'),' <<< \"',parameters('testScenarios'),' ',parameters('testInputPropertyFile'),' ',parameters('testArtifactRepo'),' ',parameters('dsJNDI'),' ',parameters('dbType'),'\"')]"
 				}
 			}
 		}

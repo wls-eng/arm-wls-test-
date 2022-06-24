@@ -1,0 +1,77 @@
+{
+  "adminPasswordOrKey": {
+    "value": "Weblogic5678"
+  },
+  "adminUsername": {
+    "value": "weblogic"
+  },
+  "appGatewayCertificateOption": {
+    "value": "haveCert"
+  },
+  "appGatewaySSLCertData": {
+    "value": "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"
+  },
+  "appGatewaySSLCertPassword": {
+    "value": "Gumby12340987"
+  },
+  "authenticationType": {
+    "value": "password"
+  },
+  "enableDB": {
+    "value": true
+  },
+  "databaseType": {
+    "value": "postgresql"
+  },
+  "dbGlobalTranPro": {
+    "value": "OnePhaseCommit"
+  },  
+  "denyPublicTrafficForManagedServer": {
+    "value": true
+  },
+  "enableAAD": {
+    "value": false
+  },
+  "enableAppGateway": {
+    "value": true
+  },
+  "enableCoherence": {
+    "value": true
+  },
+  "enableCoherenceWebLocalStorage": {
+    "value": true
+  },
+  "enableDNSConfiguration": {
+    "value": false
+  },
+  "enableELK": {
+    "value": false
+  },
+  "hasDNSZones": {
+    "value": false
+  },
+  "jdbcDataSourceName": {
+    "value": "test/jndi"
+  },  
+  "numberOfCoherenceCacheInstances": {
+    "value": 1
+  },
+  "numberOfInstances": {
+    "value": 4
+  },
+  "vmSizeSelect": {
+    "value": "Standard_B1ms"
+  },
+  "vmSizeSelectForCoherence": {
+    "value": "Standard_B1ms"
+  },
+  "wlsPassword": {
+    "value": "Weblogic5678"
+  },
+  "wlsUserName": {
+    "value": "weblogic"
+  },
+  "enableCustomSSL": {
+    "value": false
+  }
+}

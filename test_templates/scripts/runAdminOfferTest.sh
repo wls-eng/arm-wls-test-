@@ -1,6 +1,6 @@
-function usage() { echo "Usage: sh runAdminOfferTest.sh <<< 'basic,adminonly,datasource' testpropertyfile testgithubrepourl" 1>&2; exit 1; }
+function usage() { echo "Usage: sh runAdminOfferTest.sh <<< 'basic,adminonly,datasource' testpropertyfile testgithubrepourl  dsjndi dbtype" 1>&2; exit 1; }
 
-read testScenarios testInputFileName testArtifactRepo
+read testScenarios testInputFileName testArtifactRepo dsJNDI dbType
 
 # Installation of git and jq differs in RHEL and Oracle Linux
 cat /etc/os-release | grep "Red Hat Enterprise Linux"
@@ -45,8 +45,8 @@ do
 			;;
 	"datasource")
 			echo "Executing datasource tests"
-			echo "sh $testWorkDir/datasource/datasource_test.sh -i $testInputFileName"
-			sudo sh $testWorkDir/datasource/datasource_test.sh -i $testInputFileName > ${test}.log 2>&1
+			echo "sh $testWorkDir/datasource/datasource_test.sh -i $testInputFileName -o DS_JNDI=$dsJNDI,DB_TYPE=$dbType"
+			sudo sh $testWorkDir/datasource/datasource_test.sh -i $testInputFileName -o DS_JNDI=$dsJNDI,DB_TYPE=$dbType > ${test}.log 2>&1
 			;;
 	"ssl-customcert")
 			echo "Executing ssl with custom certificates"
@@ -63,18 +63,20 @@ do
 			echo "sh $testWorkDir/security/security_test.sh  -i $testInputFileName"
 			sudo sh $testWorkDir/security/security_test.sh  -i $testInputFileName > ${test}.log 2>&1
 			;;
-	*)
-			usage
-			;;
+			*)
+			;;			
 	esac
 
   echo "================ ${test} Execution Details ================ " >> summary.log
-  cat ${test}.log | grep "FAILURE" >> summary.log
-  cat ${test}.log | grep "TEST EXECUTION SUMMARY" >> summary.log
-  cat ${test}.log | grep "++" >> summary.log
-  cat ${test}.log | grep "NO OF TEST PASSED:" >> summary.log
-  cat ${test}.log | grep "NO OF TEST FAILED:" >> summary.log
-	
+  if [  -f ${test}.log ]; 
+  then  
+  	cat ${test}.log | grep "FAILURE" >> summary.log
+  	cat ${test}.log | grep "TEST EXECUTION SUMMARY" >> summary.log
+  	cat ${test}.log | grep "++" >> summary.log
+  	cat ${test}.log | grep "NO OF TEST PASSED:" >> summary.log
+  	cat ${test}.log | grep "NO OF TEST FAILED:" >> summary.log
+  fi
+		
 done 
 
 echo "============================"
