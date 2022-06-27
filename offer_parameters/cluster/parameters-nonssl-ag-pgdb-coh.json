@@ -51,7 +51,7 @@
     "value": false
   },
   "jdbcDataSourceName": {
-    "value": "test/jndi"
+    "value": "jndi/test"
   },  
   "numberOfCoherenceCacheInstances": {
     "value": 1

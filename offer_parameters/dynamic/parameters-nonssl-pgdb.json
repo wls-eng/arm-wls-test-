@@ -42,7 +42,7 @@
     "value": false
   },
   "jdbcDataSourceName": {
-    "value": "test/jndi"
+    "value": "jndi/test"
   },
   "maxDynamicClusterSize": {
     "value": 8
