@@ -34,7 +34,7 @@ function create_oracle_db_vm()
     RESULT=$(az vm create \
         --resource-group ${RG_NAME} \
         --name ${DB_NAME} \
-        --image Oracle:oracle-database-19-3:oracle-database-19-0904:latest \
+        --image ${ORACLE_DB_IMAGE} \
         --size Standard_DS2_v2 \
         --admin-username ${VM_ADMIN_USER} \
         --generate-ssh-keys \
@@ -57,17 +57,17 @@ function create_nsg_to_open_ports()
         --name allow-oracle \
         --protocol tcp \
         --priority 1001 \
-        --destination-port-range 1521
+        --destination-port-range ${DB_PORT}
         
     #create nsg and open port for remote connectivity
-    echo "creating NSG rule to open port 5502 for DB: ${DB_NAME}"
+    echo "creating NSG rule to open Oracle Database Enterprise Manager Express port ${DB_EM_EXPRESS_PORT}: "
     az network nsg rule create \
         --resource-group ${RG_NAME} \
         --nsg-name ${DB_NAME}NSG \
         --name allow-oracle-EM \
         --protocol tcp \
         --priority 1002 \
-        --destination-port-range 5502
+        --destination-port-range ${DB_EM_EXPRESS_PORT}
 
     echo "wait for VM and Network configuration to complete and then connect using SSH..."
     sleep 30s
@@ -150,8 +150,8 @@ cat << EOF > /tmp/configureORADBasRoot.sh
     sed -i 's/$/\.eastus\.cloudapp\.azure\.com &/' /etc/hostname
 
     #open firewall ports
-    firewall-cmd --zone=public --add-port=1521/tcp --permanent
-    firewall-cmd --zone=public --add-port=5502/tcp --permanent
+    firewall-cmd --zone=public --add-port=${DB_PORT}/tcp --permanent
+    firewall-cmd --zone=public --add-port=${DB_EM_EXPRESS_PORT}/tcp --permanent
     firewall-cmd --reload
 
 EOF
@@ -170,7 +170,7 @@ function configure_db_as_orauser()
     #create directory for data filesystem
     MOUNT_POINT="/u02"
     DATA_FS="oradata"
-    DB_PASSWD="OraPasswd1"
+    DB_PASSWD="${DB_PASSWD}"
     SID="oratest1"
     SYS_USER="sys"
     DATA_FILE_PATH="\${MOUNT_POINT}/\${DATA_FS}"
@@ -229,24 +229,59 @@ function copy_and_execute_oracle_user_dbconfig()
     if [ $? == 0 ];
     then
        echo "Azure Oracle DB configuration completed successfully"
-       echo "use the following parameters to connect to the oracle DB"
-       echo "jdbc:oracle:thin:@//${PUBLIC_IP_ADDRESS}:1521/${SID}"
-       echo "user: sys as sysdba"
-       echo "password: OraPasswd1"
+       echo "use the following environment variables to connect to the oracle DB"
+       echo "DB_PUBLIC_IP"
+       echo "DB_PUBLIC_HOSTNAME"
+       echo "DB_USERNAME"
+       echo "DB_PASSWD"
+       echo "DB_SID"
+       echo "DB_JDBC_URL"
     else
        echo "Azure Oracle DB configuration failed !!"
        exit 1
     fi
 }
 
+function export_db_details_as_env_variables()
+{
+   export DB_PUBLIC_IP="${PUBLIC_IP_ADDRESS}"
+   export DB_PUBLIC_HOSTNAME="${PUBLIC_HOST_NAME}"
+   export DB_USERNAME="${DB_USERNAME}"
+   export DB_PASSWD="${DB_PASSWD}"
+   export DB_SID="${SID}"
+   export DB_PORT="${DB_PORT}"
+   export DB_JDBC_URL="jdbc:oracle:thin:@//${PUBLIC_IP_ADDRESS}:${DB_PORT}/${SID}"
+
+}
+
 #main
 
+if [ ${_} == ${0} ];
+then
+   echo "Invalid command: Please use . $0 "
+   echo "On Successful execution, the following environment variables will be set with Oracle DB parameters"
+   echo "DB_PUBLIC_IP"
+   echo "DB_PUBLIC_HOSTNAME"
+   echo "DB_USERNAME"
+   echo "DB_PASSWD"
+   echo "DB_SID"
+   echo "DB_JDBC_URL"
+   exit 1
+fi
+
 LOCATION="eastus"
+ORACLE_DB_IMAGE="Oracle:oracle-database-19-3:oracle-database-19-0904:latest"
 VM_ADMIN_USER="azureuser"
 DISK_NAME="oradata01"
 SID="oratest1"
+DB_PORT="1521"
+DB_EM_EXPRESS_PORT="5502"
+DB_USERNAME="sys as sysdba"
+DB_PASSWD="OraPasswd1"
 
 validate_args "$@"
+
+start=$(date +%s)
 
 create_resource_group
 
@@ -263,3 +298,8 @@ verify_ssh_connection_to_dbvm
 configure_db_as_root
 
 configure_db_as_orauser
+
+export_db_details_as_env_variables
+
+end=$(date +%s)
+echo "Time taken to execute the script : $(($end-$start)) seconds"
