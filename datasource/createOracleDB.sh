@@ -7,6 +7,22 @@ function usage()
   exit 1
 }
 
+function check_current_shell()
+{
+   if [ ${_} == ${1} ];
+    then
+       echo "Invalid command: Please use . $0 "
+       echo "On Successful execution, the following environment variables will be set with Oracle DB parameters"
+       echo "DB_PUBLIC_IP"
+       echo "DB_PUBLIC_HOSTNAME"
+       echo "DB_USERNAME"
+       echo "DB_PASSWD"
+       echo "DB_SID"
+       echo "DB_JDBC_URL"
+       exit 1
+    fi
+}
+
 function validate_args()
 {
     if [ $# != 2 ];
@@ -17,9 +33,23 @@ function validate_args()
     RG_NAME="$1"
     DB_NAME="$2"
 
+    if [[ ${DB_NAME} =~ ^[a-zA-Z]+$ ]]
+    then
+       n=${#DB_NAME}
+       if [ $n -gt 8 ];
+       then
+           echo "Invalid DB_NAME DB_NAME has to be a string containing only alphabets with maximum of 8 characters"
+           exit 1
+       fi
+    else
+       echo "Invalid DB_NAME. DB_NAME has to be a string containing only alphabets with maximum of 8 characters"
+       exit 1
+    fi
+
     NEW_UUID=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 4 | head -n 1)
     DB_NAME_LC="${DB_NAME,,}"
     PUBLIC_IP="${NEW_UUID}${DB_NAME_LC}"
+    SID="${DB_NAME_LC}"
 }
 
 function create_resource_group()
@@ -171,7 +201,7 @@ function configure_db_as_orauser()
     MOUNT_POINT="/u02"
     DATA_FS="oradata"
     DB_PASSWD="${DB_PASSWD}"
-    SID="oratest1"
+    SID="${SID}"
     SYS_USER="sys"
     DATA_FILE_PATH="\${MOUNT_POINT}/\${DATA_FS}"
     mkdir \${DATA_FILE_PATH}
@@ -192,6 +222,14 @@ function configure_db_as_orauser()
        -storageType FS \
        -datafileDestination "\${DATA_FILE_PATH}" \
        -ignorePreReqs
+
+    if [ \$? != 0 ];
+    then
+      echo "DBCA Utility failed !! Failed to create Oracle Database."
+      exit 1
+    else
+      echo "Successfully completed execution of database creation assistant"
+    fi
 
     export ORACLE_SID=\${SID}   
     echo "export ORACLE_SID=\${SID}" >> ~oracle/.bashrc   
@@ -256,24 +294,12 @@ function export_db_details_as_env_variables()
 
 #main
 
-if [ ${_} == ${0} ];
-then
-   echo "Invalid command: Please use . $0 "
-   echo "On Successful execution, the following environment variables will be set with Oracle DB parameters"
-   echo "DB_PUBLIC_IP"
-   echo "DB_PUBLIC_HOSTNAME"
-   echo "DB_USERNAME"
-   echo "DB_PASSWD"
-   echo "DB_SID"
-   echo "DB_JDBC_URL"
-   exit 1
-fi
+check_current_shell "${0}"
 
 LOCATION="eastus"
 ORACLE_DB_IMAGE="Oracle:oracle-database-19-3:oracle-database-19-0904:latest"
 VM_ADMIN_USER="azureuser"
 DISK_NAME="oradata01"
-SID="oratest1"
 DB_PORT="1521"
 DB_EM_EXPRESS_PORT="5502"
 DB_USERNAME="sys as sysdba"
