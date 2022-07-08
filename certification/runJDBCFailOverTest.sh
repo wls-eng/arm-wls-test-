@@ -23,9 +23,7 @@ cd functional/core/certification/jdbc
 
 rm -f *.log
 
-ant -f jdbc.test.xml clean build prepare startup -DazEnv=true
-
-ant -f jdbc.test.xml run | tee $RESULTS_DIR/jdbc_test_run.log
+ant -f jdbc.test.xml clean build all -DazEnv=true | tee $RESULTS_DIR/jdbc_test_run.log
 
 
 if grep -iq "not a clean run :-(" $RESULTS_DIR/jdbc_test_run.log
