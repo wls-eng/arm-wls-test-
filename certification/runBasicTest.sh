@@ -7,7 +7,7 @@ export RELEASE=/u01/app/wls/install/oracle/middleware/oracle_home/wlserver/serve
 
 export JAVA_HOME_ctl=$JAVA_HOME
 
-export WLS_TESTROOT="$( readlink -f ${SCRIPT_DIR}/..)"
+export WLS_TESTROOT="/u01/app/workspace"
 export T_WORK=$WLS_TESTROOT/work
 export BUILDOUT=$T_WORK/buildout
 export WLS_TEST_RESULTS=$T_WORK/resultout

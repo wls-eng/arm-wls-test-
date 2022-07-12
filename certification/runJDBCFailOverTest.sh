@@ -19,17 +19,17 @@ cd $WLS_TESTROOT/wlstest
 
 . ./qaenv.sh
 
-cd functional/core/certification/jms
+cd functional/core/certification/jdbc
 
 rm -f *.log
 
-ant -f jms_cluster_failover.test.xml clean build all -DazEnv=true | tee $RESULTS_DIR/jms_test_run.log
+ant -f jdbc.test.xml clean build all -DazEnv=true | tee $RESULTS_DIR/jdbc_test_run.log
 
 
-if grep -iq "not a clean run :-(" $RESULTS_DIR/jms_test_run.log
+if grep -iq "not a clean run :-(" $RESULTS_DIR/jdbc_test_run.log
 then
-	echo "All tests didn't pass successfully"
-	exit 1
+        echo "All tests didn't pass successfully"
+        exit 1
 else
-	echo "All tests passed successfully"
+        echo "All tests passed successfully"
 fi
