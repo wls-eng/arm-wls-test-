@@ -9,7 +9,7 @@ function usage()
 
 function check_current_shell()
 {
-   if [ ${_} == ${1} ];
+   if [[ ${_} == ${1} ]];
     then
        echo "Invalid command: Please use . $0 "
        echo "On Successful execution, the following environment variables will be set with MSSQL DB parameters"
@@ -65,21 +65,24 @@ function create_resource_group()
 
 function create_mssql_db_server()
 {
-    echo "creating MSSQL DB Server ${DB_SERVER} in resource group ${RG_NAME}"
+     echo "creating MSSQL DB Server ${DB_SERVER} in resource group ${RG_NAME}"
     az sql server create --name ${DB_SERVER} \
                                   --resource-group ${RG_NAME} \
                                   --location "${LOCATION}" \
                                   --admin-user ${DB_USERNAME} \
                                   --admin-password ${DB_PASSWD}
-
+   
     if [ "$?" != 0 ];
     then
      echo "Failure !! Error while creating MSSQL Database Server ${DB_SERVER}"
      exit 1
     fi
 
+    sleep 2s
+    
     DB_PUBLIC_HOSTNAME=$(az sql server show --name ${DB_SERVER} --resource-group ${RG_NAME} --output tsv --query [fullyQualifiedDomainName])
     echo "DB_PUBLIC_HOSTNAME: $DB_PUBLIC_HOSTNAME"
+
 }
 
 function configure_firewall_for_db_server()
