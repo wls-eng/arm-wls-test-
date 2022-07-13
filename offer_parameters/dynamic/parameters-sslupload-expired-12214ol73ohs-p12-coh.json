@@ -1,0 +1,125 @@
+{
+  "adminPasswordOrKey": {
+    "value": "Weblogic5678"
+  },
+  "adminUsername": {
+    "value": "weblogic"
+  },
+  "authenticationType": {
+    "value": "password"
+  },
+  "denyPublicTrafficForManagedServer": {
+    "value": true
+  },
+  "dynamicClusterSize": {
+    "value": 3
+  },
+  "enableAAD": {
+    "value": false
+  },
+  "enableCoherence": {
+    "value": true
+  },
+  "enableCoherenceWebLocalStorage": {
+    "value": true
+  },
+  "enableDB": {
+    "value": false
+  },
+  "enableCustomDNS": {
+    "value": false
+  },
+  "enableELK": {
+    "value": false
+  },
+  "enableOHS": {
+    "value": true
+  },
+  "hasDNSZones": {
+    "value": false
+  },
+  "maxDynamicClusterSize": {
+    "value": 8
+  },
+  "numberOfCoherenceCacheInstances": {
+    "value": 1
+  },
+  "vmSizeSelect": {
+    "value": "Standard_B1ms"
+  },
+  "vmSizeSelectForCoherence": {
+    "value": "Standard_B1ms"
+  },
+  "wlsPassword": {
+    "value": "Weblogic5678"
+  },
+  "wlsUserName": {
+    "value": "weblogic"
+  },
+  "ohsSkuUrnVersion": {
+    "value": "ohs-122140-jdk8-ol73;ohs-122140-jdk8-ol73;latest"
+  },
+  "ohsDomainName": {
+    "value": "ohsStandaloneDomain"
+  },
+  "ohsComponentName": {
+    "value": "ohs_component"
+  },
+  "ohsNMUser": {
+    "value": "weblogic"
+  },
+  "ohsNMPassword": {
+    "value": "Weblogic5678"
+  },
+  "ohshttpPort": {
+    "value": "7777"
+  },
+  "ohshttpsPort": {
+    "value": "4444"
+  },
+  "oracleVaultPswd": {
+    "value": "Weblogic5678"
+  },
+  "enableCustomSSL": {
+    "value": true
+  },
+  "sslConfigurationAccessOption": {
+    "value": "uploadConfig"
+  },
+  "uploadedCustomIdentityKeyStoreData": {
+    "value": "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"
+  },
+  "uploadedCustomIdentityKeyStorePassphrase": {
+    "value": "Weblogic5678"
+  },
+  "uploadedCustomIdentityKeyStoreType": {
+    "value": "PKCS12"
+  },
+  "uploadedCustomTrustKeyStoreData": {
+    "value": "MIIE7gIBAzCCBKcGCSqGSIb3DQEHAaCCBJgEggSUMIIEkDCCBIwGCSqGSIb3DQEHBqCCBH0wggR5AgEAMIIEcgYJKoZIhvcNAQcBMCkGCiqGSIb3DQEMAQYwGwQUV0XCowTTId8hhjsmGR0dxzQcVrQCAwDDUICCBDg9PgvTPPVGijL9nr9/sltKMgMb1DV4nN7iMxORFk838OFmpriueN/zDisZdmhsfxk3pVV9VDUvQ8DwSxBFqOa+pq8qobGUwt8oOnyNwrOPE6RqjsLqugbtj9HdT2HR3lZYdHQZpGswgwB9GaUYPn8FNYytvbdc/btVj91tqMsJl6HvOUiU74IFYMSszMX5hL1pSIgSTONWsgMKn7PiV3qemTbJPVfA0so5ziGOjdc1iSJ4d5lT5CTxQLM9gAePzdO6SjC8dIA3POo+jNTMTWHwvwqHJ/DieWTeY4nCwMrVMFsj2RBdfGNPOyf6nntMnpDVh3Qn4T/Xh+oo1wa4l7D1/HYUi+rj9iBG6wWaETgGKfc8Lk8dtrDJzNL1tsWB8+RTsJQKpoNRdPNx9gWE/LqWtb2rJO4pA1XlRW//W+3FJay+66wqaPDggxiDlS0FhbxHpqtyHSGaMNtM0k9wNZVNofzn7yK+9Hd5W1ZECwMeJmnk5Lf8KZbj9dAs1i9ZG+LB3IdDSSgNdl1lUXxb3vGXIKrMmPv3Fb74FGTyiXU3aMiGZikav/h2KB1494c00cNWritxndBeU0GY+nqcxu2Fa2xiQLMdiX0B84yVekWNVODStRPk7LaOppXEMnC4l4kGpLqh45akr5Ri5WlchvVDZW9j1CRaGuf2EKKCd1ye9Cy7HgyGByCwxZAw+rUX6noFAl3hRs33s72AIACVlhaOswaTCjTf7492WU/GBwH9m6z1TMsM9A6s0bL3d4QJNBADvZXzG6sd0jskxLiQS7cMeTQw/OrM/Q+jvxeDryywmgyJDIVGqj6z9+hE7/UzbJXrX8j/rtIQngyuTyf9YnWz//O/7YGyiONIepv+xo63hmD4wlq+sruk5KgkvfhE92LF4+gJIq4kcudCe9D+ZAmkdy6umh+j2NIyy7WqALSMAYe/ZTccOfoF88+OdYsql+PEpWjm/4uBkiJVrvmqKACh0lCWe3Mrw9vAukfjcsvZV39YDNfYJ0yl6oJv9w+V6BE9YZcy4rqL/g4f9VU8UfPxL+1OgOye6MM87mCWUzoEuPud4DFn31Z1FXb3nc13C0mHWBbjHc/7uttpr058ykWSlPWX3OQXthqHItnTCVEK136FBR4vagbWt6bg4TMrWe5jnQCsxfN9JO+gsOGCUKy2EwDRt7qP8zRHVW6lJGezX/VVUgrKMLNMx5+SRxXzuJFTGxABZysbHxXcYW8b8X7Yzrmsf4jKsiJwrs87vK3WqwoLD0povDhMwWEKp2+jbBD3IzwFuhFe0g3VAfizP69QEI3C6r1Oo+LMlwl40KhKcwIktwWaYNfLNldDXdRjzsna4lWgZ0FJdQuqvp6GHqu78PlMNpyF+JrA9jwF3m2GiycflNXO2hMViWru6vLjV7IiAvNErBjnU5EHv85bmrOkfZRojY8gTEcwPjAhMAkGBSsOAwIaBQAEFLpH1N4ejZ21c7QOz5q0Yq9Eh5zABBSnSwhquiCeQOPAlA0+cdEUrscEJAIDAYag"
+  },
+  "uploadedCustomTrustKeyStorePassPhrase": {
+    "value": "Weblogic5678"
+  },
+  "uploadedCustomTrustKeyStoreType": {
+    "value": "JKS"
+  },
+  "uploadedPrivateKeyAlias": {
+    "value": "servercert"
+  },
+  "uploadedPrivateKeyPassPhrase": {
+    "value": "Weblogic5678"
+  },
+  "ohsSSLConfigAccessOption": {
+    "value": "uploadConfig"
+  },
+  "uploadedKeyStoreData": {
+    "value": "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"
+  },
+  "uploadedKeyStorePassword": {
+    "value": "Weblogic5678"
+  },
+  "uploadedKeyStoreType": {
+    "value": "PKCS12"
+  }
+}
