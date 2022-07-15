@@ -9,7 +9,7 @@ function usage()
 
 function check_current_shell()
 {
-   if [ ${_} == ${1} ];
+   if [ "${_}" == "${1}" ];
     then
        echo "Invalid command: Please use . $0 "
        echo "On Successful execution, the following environment variables will be set with Oracle DB parameters"
@@ -61,15 +61,25 @@ function create_resource_group()
 function create_oracle_db_vm()
 {
     echo "creating VM ${DB_NAME} in resource group ${RG_NAME} for setting up Oracle DB"
-    RESULT=$(az vm create \
+    az vm create \
         --resource-group ${RG_NAME} \
         --name ${DB_NAME} \
         --image ${ORACLE_DB_IMAGE} \
         --size Standard_DS2_v2 \
-        --admin-username ${VM_ADMIN_USER} \
-        --generate-ssh-keys \
         --public-ip-address-allocation static \
-        --public-ip-address-dns-name ${PUBLIC_IP})
+        --public-ip-address-dns-name ${PUBLIC_IP} \
+        --authentication-type ssh \
+        --generate-ssh-keys \
+        --admin-username ${VM_ADMIN_USER}
+
+   if [ "$?" != "0" ];
+   then
+      echo "Database VM creation failed !!"
+      exit 1
+   else
+      echo "Database VM Successfull !!"
+   fi
+
 }
 
 function attach_disk_to_vm()
@@ -203,11 +213,12 @@ function configure_db_as_orauser()
     DB_PASSWD="${DB_PASSWD}"
     SID="${SID}"
     SYS_USER="sys"
+
     DATA_FILE_PATH="\${MOUNT_POINT}/\${DATA_FS}"
     mkdir \${DATA_FILE_PATH}
 
     #run the database creation assistant
-    dbca -silent \
+    nohup dbca -silent \
        -createDatabase \
        -templateName General_Purpose.dbc \
        -gdbname \${SID} \
@@ -221,9 +232,42 @@ function configure_db_as_orauser()
        -automaticMemoryManagement false \
        -storageType FS \
        -datafileDestination "\${DATA_FILE_PATH}" \
-       -ignorePreReqs
+       -ignorePreReqs &
 
-    if [ \$? != 0 ];
+    counter=1
+    DBCA_COMPLETE="false"
+
+    while [  \${counter} -lt 20 ];
+    do
+
+       if [ ! -f /u01/app/oracle/cfgtoollogs/dbca/${SID}/${SID}.log ];
+       then
+             echo "Iteration \${counter} : dbca activity not yet started"
+             counter=\$((counter+1))
+             sleep 60s
+       else
+
+             cat /u01/app/oracle/cfgtoollogs/dbca/${SID}/${SID}.log | grep "DBCA_PROGRESS : 100%"
+             result1="\$?"
+
+             cat /u01/app/oracle/cfgtoollogs/dbca/${SID}/${SID}.log | grep "Database creation complete"
+             result2="\$?"
+
+             if [ "\$result1" != 0 ] && [ "\$result2" != "0" ];
+             then
+                echo "Iteration \${counter} :  dbca in progress"
+                sleep 60s
+                counter=\$((counter+1))
+             else
+                 echo "Iteration \${counter} :  dbca utility completed"
+                 DBCA_COMPLETE="true"
+                 break
+             fi
+       fi
+    done
+
+
+    if [ "\${DBCA_COMPLETE}" == "false" ];
     then
       echo "DBCA Utility failed !! Failed to create Oracle Database."
       exit 1
