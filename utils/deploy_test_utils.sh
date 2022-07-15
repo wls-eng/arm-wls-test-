@@ -154,6 +154,11 @@ function deployAdminOffer()
 	echo "Deploying admin offer"
 	echo "az group deployment create --resource-group $resourceGroupName --template-uri $rawMainTemplateURL --parameters $parametersJsonFilePath  skuUrnVersion=${skuUrnVersion} ${additionalOfferParams} location=$location"  
 	az group deployment create --resource-group $resourceGroupName --template-uri $rawMainTemplateURL --parameters $parametersJsonFilePath  skuUrnVersion=${skuUrnVersion} ${additionalOfferParams} location=$location
+	if [[ $? != 0 ]];
+	then
+		echo "Azure WebLogic deployment failed"
+		exit 1
+	fi
 }
 
 #deploy cluster offer
@@ -171,6 +176,11 @@ function deployClusterOffer()
 	echo "Deploying cluster offer"
 	echo "az group deployment create --resource-group $resourceGroupName --template-uri $rawMainTemplateURL --parameters $parametersJsonFilePath  skuUrnVersion=${skuUrnVersion} ${additionalOfferParams} location=$location"  
 	az group deployment create --resource-group $resourceGroupName --template-uri $rawMainTemplateURL --parameters $parametersJsonFilePath  skuUrnVersion=${skuUrnVersion} ${additionalOfferParams} location=$location
+	if [[ $? != 0 ]];
+	then
+		echo "Azure WebLogic deployment failed"
+		exit 1
+	fi
 }
 
 
@@ -205,7 +215,11 @@ function testOffer()
 	echo "Testing the offer with $testScript"
 	echo "az group deployment create --resource-group $resourceGroupName --template-uri $rawMainTemplateURL --parameters testScenarios=$runTests testInputPropertyFile=$testInputFile testScriptFileName=$testScript testArtifactRepo=$testRepoURL location=$location _artifactsLocation=$artifactLocation ${additionalTestParams} "
  	az group deployment create --resource-group $resourceGroupName --template-uri $rawMainTemplateURL --parameters testScenarios=$runTests testInputPropertyFile=$testInputFile testScriptFileName=$testScript testArtifactRepo=$testRepoURL location=$location _artifactsLocation=$artifactLocation ${additionalTestParams} 
-	
+	if [[ $? != 0 ]];
+	then
+		echo "Azure test deployment failed"
+		exit 1
+	fi
 }	
 
 # Remote testing
