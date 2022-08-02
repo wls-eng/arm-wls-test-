@@ -9,8 +9,8 @@ function usage()
 {
   echo "usage"
   echo "$0 -i <test-input-file> -o DS_JNDI=<JNDI_NAME>,DB_TYPE=<DB_TYPE>"
-  echo "DB_TYPE --> POSTGRESQL, MSSQL"
-  echo "example: $0 -i test_input/weblogic-141100-jdk8-ol76.props -o DS_JNDI=jndi/postgresql,DB_TYPE=POSTGRESQL"
+  echo "DB_TYPE --> postgresql,sqlserver,oracle"
+  echo "example: $0 -i test_input/weblogic-141100-jdk8-ol76.props -o DS_JNDI=jndi/postgresql,DB_TYPE=postgresql"
   exit 1
 }
 function validate_other_args()
@@ -202,13 +202,14 @@ function verifyJDBCDriver()
     fi
 
     DRIVER_VERSION=$(echo "$output" | jq -r '.DriverVersion')
+    echo "DRIVER VERSION: $DRIVER_VERSION"
 
     if [ -z "${DB_TYPE}" ];
     then
        echo "FAILURE: DB_TYPE Parameter not provided"
        notifyFail
     else
-        if [ "${DB_TYPE}" == "POSTGRESQL" ];
+        if [ "${DB_TYPE}" == "postgresql" ];
         then
           if [ "${DRIVER_VERSION}" == "${POSTGRESQL_DRIVER_VERSION}" ];
           then
@@ -220,7 +221,7 @@ function verifyJDBCDriver()
           fi
         fi
 
-        if [ "${DB_TYPE}" == "MSSQL" ];
+        if [ "${DB_TYPE}" == "sqlserver" ];
         then
           if [ "${DRIVER_VERSION}" == "${MSSQL_DRIVER_VERSION}" ];
           then
