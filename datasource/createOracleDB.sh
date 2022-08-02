@@ -66,6 +66,7 @@ function create_oracle_db_vm()
         --name ${DB_NAME} \
         --image ${ORACLE_DB_IMAGE} \
         --size Standard_DS2_v2 \
+        --public-ip-sku Standard \
         --public-ip-address-allocation static \
         --public-ip-address-dns-name ${PUBLIC_IP} \
         --authentication-type ssh \
@@ -213,6 +214,8 @@ function configure_db_as_orauser()
     DB_PASSWD="${DB_PASSWD}"
     SID="${SID}"
     SYS_USER="sys"
+    WLS_ENG_USER="wlseng"
+    WLS_ENG_PASSWD="wls123"
 
     DATA_FILE_PATH="\${MOUNT_POINT}/\${DATA_FS}"
     mkdir \${DATA_FILE_PATH}
@@ -237,7 +240,7 @@ function configure_db_as_orauser()
     counter=1
     DBCA_COMPLETE="false"
 
-    while [  \${counter} -lt 20 ];
+    while [  \${counter} -lt 60 ];
     do
 
        if [ ! -f /u01/app/oracle/cfgtoollogs/dbca/${SID}/${SID}.log ];
@@ -256,7 +259,7 @@ function configure_db_as_orauser()
              if [ "\$result1" != 0 ] && [ "\$result2" != "0" ];
              then
                 echo "Iteration \${counter} :  dbca in progress"
-                sleep 60s
+                sleep 20s
                 counter=\$((counter+1))
              else
                  echo "Iteration \${counter} :  dbca utility completed"
@@ -287,6 +290,21 @@ function configure_db_as_orauser()
       echo "FAILURE: Failed to create Oracle DB and connect to DB as system user"
       exit 1
     fi
+
+echo "creating wlseng user"
+
+    cat << REALEND > /tmp/createWLSDBUser.sql
+CREATE USER \${WLS_ENG_USER} IDENTIFIED BY \${WLS_ENG_PASSWD};
+GRANT CONNECT TO \${WLS_ENG_USER};
+GRANT CREATE SESSION TO \${WLS_ENG_USER};
+GRANT CREATE TABLE TO \${WLS_ENG_USER};
+GRANT UNLIMITED TABLESPACE TO \${WLS_ENG_USER};
+GRANT CREATE PROCEDURE TO \${WLS_ENG_USER};
+REALEND
+
+echo "exit" | sqlplus -S \${SYS_USER}/\${DB_PASSWD} as sysdba @/tmp/createWLSDBUser.sql
+
+echo "created wlseng user"
 
 EOF
     copy_and_execute_oracle_user_dbconfig
@@ -328,8 +346,8 @@ function export_db_details_as_env_variables()
 {
    export DB_PUBLIC_IP="${PUBLIC_IP_ADDRESS}"
    export DB_PUBLIC_HOSTNAME="${PUBLIC_HOST_NAME}"
-   export DB_USERNAME="${DB_USERNAME}"
-   export DB_PASSWD="${DB_PASSWD}"
+   export DB_USERNAME="${WLS_ENG_USER}"
+   export DB_PASSWD="${WLS_ENG_PASSWD}"
    export DB_SID="${SID}"
    export DB_PORT="${DB_PORT}"
    export DB_JDBC_URL="jdbc:oracle:thin:@//${PUBLIC_IP_ADDRESS}:${DB_PORT}/${SID}"
@@ -348,6 +366,8 @@ DB_PORT="1521"
 DB_EM_EXPRESS_PORT="5502"
 DB_USERNAME="sys as sysdba"
 DB_PASSWD="OraPasswd1"
+WLS_ENG_USER="wlseng"
+WLS_ENG_PASSWD="wls123"
 
 validate_args "$@"
 
