@@ -1,0 +1,44 @@
+{
+	"adminPasswordOrKey": {
+		"value": "Weblogic5678"
+	},
+	"adminUsername": {
+		"value": "weblogic"
+	},
+	"authenticationType": {
+		"value": "password"
+	},
+	"dbGlobalTranPro": {
+		"value": "OnePhaseCommit"
+	},
+	"enableAAD": {
+		"value": false
+	},
+	"enableDB": {
+		"value": true
+	},
+	"enableCustomDNS": {
+		"value": false
+	},
+	"enableELK": {
+		"value": false
+	},
+	"hasDNSZones": {
+		"value": false
+	},
+	"jdbcDataSourceName": {
+		"value": "jndi/test"
+	},
+	"vmSizeSelect": {
+		"value": "Standard_B1ms"
+	},
+	"enableCustomSSL": {
+		"value": false
+	},
+	"wlsPassword": {
+		"value": "Weblogic5678"
+	},
+	"wlsUserName": {
+		"value": "weblogic"
+	}
+}
