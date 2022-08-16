@@ -138,6 +138,44 @@ fi
 
 }
 
+function verifyCoherenceServerStatus()
+{
+   print "verifying Coherence Server Status"
+
+cat << EOF >> $SCRIPT_DIR/verifyCoherenceServerStatus.py
+
+connect("${WLS_USERNAME}","${WLS_PASSWORD}","${T3_ADMIN_URL}")
+serverConfig()
+servers = cmo.getServers()
+domainRuntime()
+for server in servers:
+    print server.getName()
+    if server.getName().startswith("${COHERENCE_SERVER_PREFIX}"):
+       cd("/ServerRuntimes/" + server.getName())
+       state = cmo.getState()
+       print "server state: "+state
+       if state == "RUNNING":
+           print server.getName()+ " is Running"
+       else:
+           raise Exception("Coherence Server : "+server.getName()+" not running")
+
+disconnect()
+exit()
+
+EOF
+
+runuser -l oracle -c ". ${ORACLE_HOME}/oracle_common/common/bin/setWlstEnv.sh; java weblogic.WLST ${SCRIPT_DIR}/verifyCoherenceServerStatus.py ${REDIRECT_OUTPUT}"
+if [[ $? != 0 ]]; then
+  echo "FAILURE: Coherence Cluster List verification failed"
+  notifyFail
+else
+  echo "SUCCESS: Coherence Cluster List verification is successful."
+  notifyPass
+fi
+
+}
+
+
 #main
 
 ORACLE_HOME="/u01/app/wls/install/oracle/middleware/oracle_home"
@@ -163,5 +201,7 @@ verifyCoherenceClusterName
 verifyCoherenceClusterMemberSize
 
 verifyCoherenceClusterMemberList
+
+verifyCoherenceServerStatus
 
 printTestSummary
