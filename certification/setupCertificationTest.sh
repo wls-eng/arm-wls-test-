@@ -50,9 +50,9 @@ rm -rf wlstest.zip
 AZURE_CERTIFICATION_CONFIG_FILE="/u01/app/workspace/wlstest/functional/core/certification/common/config/azure_config/t3_config.properties"
 
 echo "replacing JDBC datasource url, username and password details in azure config file"
-sed -i "s/datasource.url=.*/datasource.url=${JDBC_URL}/g" ${AZURE_CERTIFICATION_CONFIG_FILE}
-sed -i "s/datasource.username=.*/datasource.username=\"${DB_USER}\"/g" ${AZURE_CERTIFICATION_CONFIG_FILE}
-sed -i "s/datasource.password=.*/datasource.password=\"${DB_PASSWORD}\"/g" ${AZURE_CERTIFICATION_CONFIG_FILE}
+sed -i "s#datasource.url=.*#datasource.url=${JDBC_URL}#g" ${AZURE_CERTIFICATION_CONFIG_FILE}
+sed -i "s#datasource.username=.*#datasource.username=\"${DB_USER}\"#g" ${AZURE_CERTIFICATION_CONFIG_FILE}
+sed -i "s#datasource.password=.*#datasource.password=\"${DB_PASSWORD}\"#g" ${AZURE_CERTIFICATION_CONFIG_FILE}
 
 chown -R oracle:oracle /u01/app/workspace
 
