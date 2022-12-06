@@ -50,7 +50,7 @@
   "numberOfCoherenceCacheInstances": {
     "value": 1
   },
-  "vmSizeSelect": {
+  "vmSize": {
     "value": "Standard_B1ms"
   },
   "wlsPassword": {
