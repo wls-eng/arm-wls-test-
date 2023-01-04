@@ -32,7 +32,7 @@
   "jdbcDataSourceName": {
     "value": "jndi/test"
   },
-  "vmSizeSelect": {
+  "vmSize": {
     "value": "Standard_B1ms"
   },
   "wlsPassword": {
