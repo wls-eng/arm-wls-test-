@@ -47,7 +47,7 @@
   "numberOfInstances": {
     "value": 4
   },
-  "vmSizeSelect": {
+  "vmSize": {
     "value": "Standard_B1ms"
   },
   "wlsLDAPGroupBaseDN": {
