@@ -23,7 +23,7 @@
   "hasDNSZones": {
     "value": false
   },
-  "vmSizeSelect": {
+  "vmSize": {
     "value": "Standard_B1ms"
   },
   "wlsPassword": {
