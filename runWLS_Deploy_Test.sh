@@ -63,8 +63,8 @@ date=`date +%F-%s`
 TEST_BRANCH_NAME="test-$date"
 REQ_GIT_VERSION=2.3
 WLS_TEST_GIT_REPOSITORY="https://github.com/sanjaymantoor/arm-wls-test.git"
-TEST_RAW_MAIN_TEMPLATE_URL="https://raw.githubusercontent.com/wls-eng/arm-wls-test/develop/test_templates/arm/mainTemplate.json"
-TEST_ARTIFACT_LOCATION="https://raw.githubusercontent.com/wls-eng/arm-wls-test/develop/test_templates/arm/"
+TEST_RAW_MAIN_TEMPLATE_URL="https://raw.githubusercontent.com/sanjaymantoor/arm-wls-test/develop/test_templates/arm/mainTemplate.json"
+TEST_ARTIFACT_LOCATION="https://raw.githubusercontent.com/sanjaymantoor/arm-wls-test/develop/test_templates/arm/"
 if [ -z "${LOCATION}" ]; then
 	echo "No LOCATION environment set, using default LOCATION=eastus"
 	LOCATION=eastus
