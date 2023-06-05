@@ -127,7 +127,8 @@ fi
 
 CN=$(echo | openssl s_client -showcerts -servername ${ADMIN_HOST} -connect ${ADMIN_HOST}:${ADMIN_SSL_PORT} 2>/dev/null | openssl x509 -inform pem -out server.crt)
 
-echo $CN|openssl x509 -noout -subject -in server.crt | grep "CN=${ADMIN_HOST}" > /dev/null 2>&1
+# Replace any spaces between certificate parameters like CN = adminVM to CN=adminVM and then grep
+openssl x509 -noout -subject -in server.crt | sed 's/^[[:blank:]]*//; s/[[:blank:]]*$//; s/[[:blank:]]\{1,\}//g' | grep -i "CN=${ADMIN_HOST}" > /dev/null 2>&1
 
 if [ "$?" != "0" ];
 then
