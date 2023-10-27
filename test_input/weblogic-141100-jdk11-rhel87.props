@@ -1,4 +1,4 @@
-OS_VERSION="Red Hat Enterprise Linux Server 8.7"
+OS_VERSION="Red Hat Enterprise Linux 8.7"
 WLS_HOME=/u01/app/wls/install/oracle/middleware/oracle_home/wlserver
 JDK_PATH="/u01/app/jdk/jdk-11.0.11/"
 JDK_VERSION="build 11.0.11"
