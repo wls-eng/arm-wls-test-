@@ -5,12 +5,13 @@ read testScenarios testInputFileName testArtifactRepo dsJNDI dbType
 # Installation of git and jq differs in RHEL and Oracle Linux
 cat /etc/os-release | grep "Red Hat Enterprise Linux"
 if [[ $? == 0 ]];then
-	sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-	sudo yum --disablerepo="*" --enablerepo="epel" list available
-	sudo yum install -y epel-release
 	osversion=`cat /etc/os-release`
 	if [[ $osversion == *"7.6"* ]]; then
 		sudo yum update -y
+	else
+		sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+		sudo yum --disablerepo="*" --enablerepo="epel" list available
+		sudo yum install -y epel-release
 	fi
 	sudo yum install -y git jq
 else	
